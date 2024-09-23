@@ -24,11 +24,11 @@ jobs:
 
       - name: Login to ECR Repository 1
         run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO1 }}
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO1 }}
 
       - name: Login to ECR Repository 2
         run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
 
       - name: Build and Push Docker Images
         run: |
@@ -51,14 +51,14 @@ jobs:
           #Crearte new network
             docker network create my-network
             # Pull the latest images from ECR
-             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
+             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
             docker pull ${{ secrets.ECR_REPO2 }}:latest
             docker stop mysql || true
             docker rm -f mysql || true
             docker run --name mysql --network my-network -e MYSQL_ROOT_PASSWORD=${{ secrets.DBPWD }} -e MYSQL_DATABASE=${{ secrets.DB }} -d ${{ secrets.ECR_REPO2 }}:latest
 
             
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 
             docker pull ${{ secrets.ECR_REPO1 }}:latest
             docker stop blue || true
             docker stop pink || true
