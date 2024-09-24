@@ -14,33 +14,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up AWS CLI           
-        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-
-          
-
-      - name: Login to ECR Repository 1
-        run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO1 }}
-         
-
-      - name: Login to ECR Repository 2
-        run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} # Only if using temporary credentials
 
       - name: Build and Push Docker Images
         run: |
-          # Build your Docker images
-          docker build -t webapp ./path-to-your-app1
+          # Build your Docker images for ECR Repo 1
+          docker build -t webapp .
           docker tag webapp:latest ${{ secrets.ECR_REPO1 }}:latest
           docker push ${{ secrets.ECR_REPO1 }}:latest
 
-          docker build -t mysql ./path-to-your-app2
+          # Build your Docker images for ECR Repo 2
+          docker build -t mysql .
           docker tag mysql:latest ${{ secrets.ECR_REPO2 }}:latest
           docker push ${{ secrets.ECR_REPO2 }}:latest
 
@@ -51,17 +40,18 @@ jobs:
         run: |
           # SSH into the EC2 instance and deploy the Docker containers
           ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_INSTANCE_IP << 'EOF'
-          #Crearte new network
+            # Create a new Docker network
             docker network create my-network
-            # Pull the latest images from ECR
-             aws ecr get-login-password --region ${{ secrets.AWS_REGION }}| docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
+
+            # Login to ECR for MySQL repo
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
             docker pull ${{ secrets.ECR_REPO2 }}:latest
             docker stop mysql || true
             docker rm -f mysql || true
             docker run --name mysql --network my-network -e MYSQL_ROOT_PASSWORD=${{ secrets.DBPWD }} -e MYSQL_DATABASE=${{ secrets.DB }} -d ${{ secrets.ECR_REPO2 }}:latest
 
-            
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 
+            # Login to ECR for web app repo
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO1 }}
             docker pull ${{ secrets.ECR_REPO1 }}:latest
             docker stop blue || true
             docker stop pink || true
@@ -74,6 +64,4 @@ jobs:
             docker run --name blue --network my-network -e APP_COLOR=blue -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT }} -d ${{ secrets.ECR_REPO1 }}
             docker run --name pink --network my-network -e APP_COLOR=pink -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT }} -d ${{ secrets.ECR_REPO1 }}
             docker run --name lime --network my-network -e APP_COLOR=lime -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT }} -d ${{ secrets.ECR_REPO1 }}
-
-          
           EOF
