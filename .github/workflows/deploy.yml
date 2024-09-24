@@ -46,7 +46,7 @@ jobs:
             chmod 400 key.pem
             
           # SSH into the EC2 instance and deploy the Docker containers
-            ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USER@$EC2_INSTANCE_IP << 'EOF'
+           ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USER@$EC2_INSTANCE_IP << 'EOF'
             
             # Create a new Docker network
             docker network create my-network
@@ -73,3 +73,6 @@ jobs:
             docker run --name pink --network my-network -e APP_COLOR=pink -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT }} -d ${{ secrets.ECR_REPO1 }}
             docker run --name lime --network my-network -e APP_COLOR=lime -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT }} -d ${{ secrets.ECR_REPO1 }}
           EOF
+          
+          # Clean up the private key file
+          rm -f key.pem
