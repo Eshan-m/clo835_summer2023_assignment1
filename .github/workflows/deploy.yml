@@ -62,6 +62,10 @@ jobs:
             docker run --name mysql --network my-network -e MYSQL_ROOT_PASSWORD=${{ secrets.DBPWD }} -e MYSQL_DATABASE=${{ secrets.DB }} -d mysql:latest
             echo done with sql
 
+           echo "Pause for 15 seconds to let mysql container start"
+           sleep 15
+           docker ps
+
             # Login to ECR for web app repo
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO1 }}
             docker pull ${{ secrets.ECR_REPO1 }}:latest
