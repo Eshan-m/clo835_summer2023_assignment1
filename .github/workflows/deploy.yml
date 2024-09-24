@@ -67,9 +67,9 @@ jobs:
             docker rm -f pink || true
             docker rm -f lime || true
             
-            docker run --name blue --network my-network -e APP_COLOR=blue -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT }} -d ${{ secrets.ECR_REPO1 }}
-            docker run --name pink --network my-network -e APP_COLOR=pink -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT }} -d ${{ secrets.ECR_REPO1 }}
-            docker run --name lime --network my-network -e APP_COLOR=lime -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT }} -d ${{ secrets.ECR_REPO1 }}
+            docker run --name blue --network my-network -e APP_COLOR=blue -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT1 }} -d ${{ secrets.ECR_REPO1 }}
+            docker run --name pink --network my-network -e APP_COLOR=pink -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT2 }} -d ${{ secrets.ECR_REPO1 }}
+            docker run --name lime --network my-network -e APP_COLOR=lime -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT3 }} -d ${{ secrets.ECR_REPO1 }}
           EOF
           
           # Clean up the private key file
