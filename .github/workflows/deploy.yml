@@ -39,9 +39,14 @@ jobs:
         env:
           EC2_USER: ${{ secrets.EC2_USER }}
           EC2_INSTANCE_IP: ${{ secrets.EC2_INSTANCE_IP }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
+           # Save the private SSH key to a temporary file
+            echo "$EC2_SSH_KEY" > key.pem
+            chmod 600 private_key.pem
           # SSH into the EC2 instance and deploy the Docker containers
-          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_INSTANCE_IP << 'EOF'
+            ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_INSTANCE_IP << 'EOF'
+            
             # Create a new Docker network
             docker network create my-network
 
