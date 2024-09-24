@@ -49,6 +49,12 @@ jobs:
             # Create a new Docker network
             docker network create my-network
 
+            hostname -I
+            ip addr show
+            ifconfig
+
+
+
             # Login to ECR for MySQL repo
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
             docker pull ${{ secrets.ECR_REPO2 }}:latest
