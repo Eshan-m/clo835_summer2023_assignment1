@@ -78,7 +78,13 @@ jobs:
             docker run --name lime --network my-network -e APP_COLOR=lime -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT3 }} -d ${{ secrets.ECR_REPO1 }}
             echo done with webapp
 
-            docker ps
+          echo "Pause for 10 seconds to let container start"
+          sleep 10
+          docker ps
+          echo currect docker
+          sleep 10
+          docker ps -a
+          echo in-active docker
           
           EOF
           
