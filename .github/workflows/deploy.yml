@@ -18,18 +18,18 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: ${{ secrets.AWS_REGION }}
           aws_session_token: ${{ secrets.AWS_SESSION_TOKEN }}
 
           
 
       - name: Login to ECR Repository 1
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO1 }}
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO1 }}
 
       - name: Login to ECR Repository 2
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
 
       - name: Build and Push Docker Images
         run: |
@@ -52,14 +52,14 @@ jobs:
           #Crearte new network
             docker network create my-network
             # Pull the latest images from ECR
-             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
+             aws ecr get-login-password --region ${{ secrets.AWS_REGION }}| docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
             docker pull ${{ secrets.ECR_REPO2 }}:latest
             docker stop mysql || true
             docker rm -f mysql || true
             docker run --name mysql --network my-network -e MYSQL_ROOT_PASSWORD=${{ secrets.DBPWD }} -e MYSQL_DATABASE=${{ secrets.DB }} -d ${{ secrets.ECR_REPO2 }}:latest
 
             
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 
             docker pull ${{ secrets.ECR_REPO1 }}:latest
             docker stop blue || true
             docker stop pink || true
@@ -69,7 +69,6 @@ jobs:
             docker rm -f pink || true
             docker rm -f lime || true
             
-            docker run -d --name my-app-repo1 ${{ secrets.ECR_REPO1 }}:latest
             docker run --name blue --network my-network -e APP_COLOR=blue -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT }} -d ${{ secrets.ECR_REPO1 }}
             docker run --name pink --network my-network -e APP_COLOR=pink -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT }} -d ${{ secrets.ECR_REPO1 }}
             docker run --name lime --network my-network -e APP_COLOR=lime -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT }} -d ${{ secrets.ECR_REPO1 }}
