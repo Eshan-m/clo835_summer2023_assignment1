@@ -2,8 +2,7 @@ name: Deploy Docker Containers
 
 on:
   push:
-    branches:
-      - main  # Change this to your default branch if different
+    branches: [ mmain ]
 
 jobs:
   deploy:
