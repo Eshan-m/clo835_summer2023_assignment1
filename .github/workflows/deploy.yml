@@ -26,12 +26,12 @@ jobs:
 
       - name: Login to ECR Repository 1
         run: |
-          $(aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO1 }})
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO1 }}
          
 
       - name: Login to ECR Repository 2
         run: |
-          $(aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }})
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO2 }}
 
       - name: Build and Push Docker Images
         run: |
