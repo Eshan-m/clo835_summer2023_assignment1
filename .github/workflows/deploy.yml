@@ -59,7 +59,7 @@ jobs:
             docker pull ${{ secrets.ECR_REPO2 }}:latest
             docker stop mysql || true
             docker rm -f mysql || true
-            docker run --name mysql --network my-network -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=employees -d mysql:latest
+            docker run --name mysql --network my-network -e MYSQL_ROOT_PASSWORD=${{ secrets.DBPWD }} -e MYSQL_DATABASE=${{ secrets.DB }} -d ${{ secrets.ECR_REPO2 }}:latest
             echo done with sql
 
             # Login to ECR for web app repo
@@ -76,10 +76,9 @@ jobs:
             docker run --name blue --network my-network -e APP_COLOR=blue -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT1 }} -d ${{ secrets.ECR_REPO1 }}
             docker run --name pink --network my-network -e APP_COLOR=pink -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT2 }} -d ${{ secrets.ECR_REPO1 }}
             docker run --name lime --network my-network -e APP_COLOR=lime -e DBHOST=${{ secrets.DBHOST }} -e DBUSER=${{ secrets.DBUSER }} -e DBPWD=${{ secrets.DBPWD }} -e DATABASE=${{ secrets.DB }} -e DBPORT=${{ secrets.DBPORT }} -p ${{ secrets.PORT3 }} -d ${{ secrets.ECR_REPO1 }}
-            echo done with sql
+            echo done with webapp
 
             docker ps
-            docker ps -a
           
           EOF
           
