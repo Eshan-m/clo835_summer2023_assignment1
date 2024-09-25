@@ -21,7 +21,7 @@ resource "aws_instance" "webapp" {
   }
 }
 
-# Add inbound rule to allow all IPv4 traffic from anywhere
+# Add inbound rule  to allow all IPv4 traffic from anywhere (Default Security)
 resource "aws_security_group_rule" "allow_all_inbound" {
   type            = "ingress"
   from_port       = 0
