@@ -50,6 +50,13 @@ jobs:
             sudo yum install docker -y
             docker -v
             sleep 5
+            sudo service docker start
+            sudo systemctl enable docker
+            sudo usermod -aG docker ec2-user
+            exit
+            
+         ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USER@$EC2_INSTANCE_IP << 'EOF'
+
             # Create a new Docker network
             docker network create my-network
 
