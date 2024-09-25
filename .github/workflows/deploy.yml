@@ -45,6 +45,11 @@ jobs:
           
           # SSH into the EC2 instance and deploy the Docker containers
           ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USER@$EC2_INSTANCE_IP << 'EOF'
+            #Install docker 
+            sudo yum update -y
+            sudo yum install docker -y
+            docker -v
+            sleep 5
             # Create a new Docker network
             docker network create my-network
 
