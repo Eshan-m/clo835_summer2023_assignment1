@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: 236480180399.dkr.ecr.us-east-1.amazonaws.com/mysql:latest  # Use your ECR image
+        image: mysql:latest   # Use your ECR image
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: "123"  # Change this to a secure password

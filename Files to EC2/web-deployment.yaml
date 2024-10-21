@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: web
-        image: 236480180399.dkr.ecr.us-east-1.amazonaws.com/webapp  # Use your ECR image
+        image: webapp:latest  # Use your ECR image
         ports:
-        - containerPort: 80
+        - containerPort: 8080
