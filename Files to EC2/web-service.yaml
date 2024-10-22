@@ -3,8 +3,6 @@ kind: Service
 metadata:
   name: webapp-service
 spec:
-imagePullSecrets:
-    - name: regcred
   selector:
     app: webapp
   type: NodePort
