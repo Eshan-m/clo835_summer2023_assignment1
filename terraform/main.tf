@@ -12,8 +12,8 @@ resource "aws_ecr_repository" "mysql_repo" {
 
 resource "aws_instance" "webapp" {
   ami           = "ami-0ebfd941bbafe70c6"  # Amazon Linux 2 AMI
-  instance_type = "t2.micro"
-  vpc_security_group_ids = ["sg-0938cfd39c9495ef8"]  # Correct argument for security groups in a VPC
+  instance_type = "t2.medium"
+  vpc_security_group_ids = ["sg-028919808508652d5"]  # Correct argument for security groups in a VPC
   key_name      = "a2"                   # Ensure the key exists in your AWS account
 
   tags = {
@@ -28,5 +28,5 @@ resource "aws_security_group_rule" "allow_all_inbound" {
   to_port         = 0
   protocol        = "-1"  # -1 means all protocols
   cidr_blocks     = ["0.0.0.0/0"]  # All IPv4 addresses
-  security_group_id = "sg-0938cfd39c9495ef8"  # Attach to the default security group
+  security_group_id = "sg-028919808508652d5"  # Attach to the default security group
 }

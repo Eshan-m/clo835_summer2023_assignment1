@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:  # <-- Correct indentation
+      containers:
+      - name: web
+        image: 236480180399.dkr.ecr.us-east-1.amazonaws.com/webapp:latest
+        env:
+          - name: DB_HOST
+            value: "mysql-service"  # Name of your MySQL service
+          - name: DB_USER
+            value: "root"
+          - name: DB_PASSWORD
+            value: "password"
+          - name: DB_NAME
+            value: "employees"
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+        - name: ecr-secret
